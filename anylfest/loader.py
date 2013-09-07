@@ -3,10 +3,9 @@ import model
 
 class Loader(object):
   """
-  Takes in an AndroidManifest file and parses it into an object tree. It has API methods:
+  Takes in an AndroidManifest file and parses it into an object tree. It has API functions:
 
   Returns Boolean:
-    hasLocationPermission
     isDebuggable
     isUIDShare
 
@@ -15,14 +14,16 @@ class Loader(object):
     getExportedService
     getExportedProvider
     getExportedReceiver
-    getSecretCodes
-    getSensitivePermissions
     getHiddenMenuActivities
+    getSecretCodes
+    getUsesPermissions
+    getCustomPermissions
 
   TODO:
-    getSharedID <manifest android:sharedUserId="android.uid.system" 
     Default intent-filter false in Android 4.1+
+    Finish mapping permissions
 
+  See each function's PyDocs string for a short description. None of the API calls take parameters.
   """
 
   def __init__(self, name="AndroidManifest-1.xml"):
@@ -39,10 +40,10 @@ class Loader(object):
     self.service = []
     self.receiver = []
     self.provider = []
-    self.uses_permissions = []
+    self.uses_permission = []
     self.data = [] # for secret codes
+    self.defines_permission = []
 
-    # Lists of interesting classes
     self.exported_activity_list = []
     self.exported_service_list = []
     self.exported_receiver_list = []
@@ -68,6 +69,9 @@ class Loader(object):
 
     # Pre-processing
     self._pre_process()
+    
+    # Post-processing
+    self._post_process()
 
   ############################
   ## PRE-PROCESSING METHODS ##
@@ -125,7 +129,7 @@ class Loader(object):
           fmtstr += curr_obj.name
           multiple = True
         curr_obj.fmtstr += fmtstr
-        self.exported_activity_list.append(curr_obj)
+        self.exported_activity_list.append(curr_obj) # FLAG
 
   def _processServices(self):
     for curr_obj in self.service:
@@ -144,14 +148,14 @@ class Loader(object):
           fmtstr += curr_obj.name
           multiple = True
         curr_obj.fmtstr += fmtstr
-        self.exported_service_list.append(curr_obj)
+        self.exported_service_list.append(str(curr_obj)) # FLAG - shouldn't this be a string...
 
   def _processProviders(self):
     for curr_obj in self.provider:
       if curr_obj.exported and not curr_obj._isProtected():
         fmtstr = self.manifest.attrib["package"] + " : " + curr_obj.name
         curr_obj.fmtstr = fmtstr
-        self.exported_provider_list.append(curr_obj)
+        self.exported_provider_list.append(curr_obj) # FLAG
 
   def _processReceivers(self):
     for curr_obj in self.receiver:
@@ -203,11 +207,19 @@ class Loader(object):
       elif curr_tag.tag == 'provider':
         self.provider.append(model.Provider(curr_tag, self.parent_map))
       elif curr_tag.tag == 'uses-permission':
-        self.uses_permissions.append(model.Uses_permission(curr_tag, self.parent_map))
+        self.uses_permission.append(model.Uses_permission(curr_tag, self.parent_map))
+      elif curr_tag.tag == 'permission':
+        self.defines_permission.append(model.Defines_permission(curr_tag, self.parent_map))
       elif curr_tag.tag == 'data':
         self.data.append(model.Data(curr_tag, self.parent_map))
       #elif curr_tag.tag == 'intent-filter':
       #  self.intent_filter.append(model.IntentFilter(curr_tag, self.parent_map))
+
+  def _map_permissions(self):
+    print ""
+
+  def _post_process(self):
+    self._map_permissions()
 
   def _pre_process(self):
     """
@@ -276,16 +288,6 @@ class Loader(object):
 
     return self.exported_hidden_menu_activities
 
-  # def getSecretCodes(self):
-  #   """
-  #   Returns true if the manifest has secret codes
-  #   """
-
-  #   for each_data in self.data:
-  #     if each_data._hasSecretCode():
-  #       return True
-  #   return False
-
   def getSecretCodes(self):
     """
     Returns a list of secret codes in the manifest
@@ -297,3 +299,15 @@ class Loader(object):
         #print "Has secret code"
         self.secret_codes.append(curr_data._getSecretCode(self.manifest))
     return self.secret_codes
+
+  def getUsesPermissions(self):
+    """
+    Returns a list of the permissions the application requests at install time
+    """
+    return self.uses_permission
+
+  def getCustomPermissions(self):
+    """
+    Returns a list of custom permissions defined by the application
+    """
+    return self.defines_permission
