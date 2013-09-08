@@ -10,7 +10,11 @@ It requires the following tools to be installed/in the current PATH for *some* f
 
 RUNNING
 -------------------------
-The main.py file can be run from the command line as:
+Anylfest can be installed to sys.path:
+```
+$ sudo python setup.py install
+```
+In order to use the library. Alternatively, run anylfest without installation using:
 ```
 $ python anylfest/main.py
 ```
