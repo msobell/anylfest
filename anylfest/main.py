@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-This class implements the anylfest API and performs preliminary analysis on AndroidManifest.xml files.
+This file implements the anylfest API and performs preliminary analysis on AndroidManifest.xml files.
 """
 import argparse
 import loader
@@ -35,9 +35,6 @@ def do_the_thing(i,s,l):
 		print ""
 
 def main():
-	"""
-	Function Doc String
-	"""
 
 	parser = argparse.ArgumentParser(description='Process some manifests.')
 	parser.add_argument('-p','--path', nargs='?', default='.',
@@ -114,7 +111,7 @@ def main():
 					stash["debuggable_app"].append(lobj[apk].manifest.attrib["package"])
 
 			except Exception, e:
-	print "PROBLEM: %s" % e # Debugging help
+				print "PROBLEM: %s" % e # Debugging help
 				current["debuggable"] = False 
 
 
@@ -122,13 +119,13 @@ def main():
 			# UID SHARE 
 			##############
 			try:
-	current["sharesUID"] = lobj[apk].isUIDShare()
+				current["sharesUID"] = lobj[apk].isUIDShare()
 
 				if current["sharesUID"]:
 					stash["uid_app"].append(lobj[apk].manifest.attrib["package"])
 
 			except Exception, e:
-	print "PROBLEM: %s" % e # Debugging help
+				print "PROBLEM: %s" % e # Debugging help
 				current["sharesUID"] = False
 
 			# map is hackish method of casting all items as strings for serialization purposes

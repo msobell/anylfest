@@ -1,5 +1,5 @@
 """
-The model.py class holds all of the AndroidManifest xml tags. Each structure inherits from a custom Node class (which inherits from object).
+The model.py file holds all of the AndroidManifest xml tags. Each structure inherits from a custom Node class (which inherits from object).
 
 This class can be added to to encompass new tags. The new classes should inherit from Node and override the __repr__ class with a human-readable representation of the manifest tag.
 """
@@ -37,10 +37,7 @@ class Node(object):
 
 class Manifest(Node):
 	"""
-	A class for the Android Manifest uses-permission tag
-
-	Attributes:
-		-
+	A class for the Android Manifest <manifest> tag
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -57,7 +54,7 @@ class Manifest(Node):
 
 class Activity(Node):
 	"""
-	
+	A class to hold attributes for the Android Manifest <activity> tag
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -76,7 +73,7 @@ class Activity(Node):
 
 class Activity_alias(Node):
 	"""
-
+	A class to hold attributes for the Android Manifest <activity-alias> tag
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -94,8 +91,8 @@ class Activity_alias(Node):
 
 class Service(Node):
 	"""
+	A class to hold attributes for the Android Manifest <service> tag
 	http://developer.android.com/guide/components/services.html
-
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -112,10 +109,7 @@ class Service(Node):
 
 class Receiver(Node):
 	"""
-	A class for the Android Manifest receiver tag
-
-	Attributes:
-		-
+	A class to hold attributes for the Android Manifest <receiver> tag
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -133,10 +127,7 @@ class Receiver(Node):
 
 class Provider(Node):
 	"""
-	A class for the Android Manifest provider tag
-
-	Attributes:
-		-
+	A class to hold attributes for the Android Manifest <provider> tags
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -153,6 +144,14 @@ class Provider(Node):
 		return self._wrapper_obj.attrib.has_key("{0}permission".format(self.xmlns))
 
 class Permission(Node):
+	"""
+	A class to describe Android permissions
+
+	Attributes:
+		name 				Name of the permission (i.e. com.android.permission.INTERNET)
+		protectionLevel		Android attribute. normal, dangerous, signature, signatureOrSystem
+		package 			Name of package which creates this permission (if applicable)
+	"""
 	def __init__(self):
 		self.name = ''
 		self.protectionLevel = ''
@@ -163,10 +162,7 @@ class Permission(Node):
 
 class Defines_permission(Node):
 	"""
-	A class for the Android Manifest permission tag used for defining custom permissions
-
-	Attributes:
-		-
+	A class to hold the Android Manifest <permission> tag used for defining custom permissions
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -188,10 +184,7 @@ class Defines_permission(Node):
 
 class Uses_permission(Node):
 	"""
-	A class for the Android Manifest uses-permission tag
-
-	Attributes:
-		-
+	A class to hold attributes for the Android Manifest <provider> tags
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -234,20 +227,17 @@ class Uses_permission(Node):
 			p.protectionLevel = "?"
 			self.custom_perm_list.append(p)
 
-	def _hasLocationPermission(self):
-		return self._wrapper_obj.attrib['{http://schemas.android.com/apk/res/android}name'] in self.location_perms
+	# def _hasLocationPermission(self):
+	# 	return self._wrapper_obj.attrib['{http://schemas.android.com/apk/res/android}name'] in self.location_perms
 
-	def _getSensitivePermissions(self):
-		perm = self._wrapper_obj.attrib['{http://schemas.android.com/apk/res/android}name']
-		return (perm in self.sensitive_perms, perm)
+	# def _getSensitivePermissions(self):
+	# 	perm = self._wrapper_obj.attrib['{http://schemas.android.com/apk/res/android}name']
+	# 	return (perm in self.sensitive_perms, perm)
 		
 
 class IntentFilter(object):
 	"""
-	A class for the Android Manifest intent-filter tag
-
-	Attributes:
-		-
+	A class to describe the Android Manifest <intent-filter> tag
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -259,7 +249,7 @@ class IntentFilter(object):
 
 class Application(Node):
 	"""
-
+	A class to describe the Android Manifest <application> tag
 	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
@@ -272,7 +262,15 @@ class Application(Node):
 		return ""
 
 class Data(Node):
-
+	"""
+	A class to describe the Android Manifest <data> tag
+	Methods:
+		_hasSecretCode	Returns boolean
+		_hasPermission 	Returns boolean
+		_getHost 		Returns a list of 'hosts'
+		_getName		Returns name attribute
+		_getSecretCode	Returns Android secret_codes
+	"""
 	def __init__(self, obj, parent_map):
 		Node.__init__(self, obj, parent_map)
 
