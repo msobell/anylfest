@@ -141,7 +141,9 @@ class Provider(Node):
 		return self.fmtstr
 
 	def _isProtected(self):
-		return self._wrapper_obj.attrib.has_key("{0}permission".format(self.xmlns))
+		return self._wrapper_obj.attrib.has_key("{0}permission".format(self.xmlns)) or \
+			(self._wrapper_obj.attrib.has_key("{0}readPermission".format(self.xmlns)) and \
+			self._wrapper_obj.attrib.has_key("{0}writePermission".format(self.xmlns)))
 
 class Permission(Node):
 	"""
