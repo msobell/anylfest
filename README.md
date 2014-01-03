@@ -70,5 +70,5 @@ TODO
 CONTRIBUTING
 -------------------------
 To contribute to anylfest, please email:
-max@intrepidusgroup.com
+sobell@gmail.com
 nitin.jami@intrepidusgroup.com
